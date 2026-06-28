@@ -28,7 +28,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            padding-bottom: 50px; /* чтобы футер не перекрывал контент */
+            padding-bottom: 50px;
             transition: opacity 0.8s ease;
             opacity: 0;
             pointer-events: none;
@@ -36,7 +36,7 @@
         }
         .screen.active { opacity: 1; pointer-events: all; }
 
-        /* ФУТЕР (общий для всех экранов) */
+        /* ФУТЕР */
         .footer {
             position: fixed;
             bottom: 0;
@@ -49,12 +49,9 @@
             padding: 6px 10px;
             z-index: 999;
             pointer-events: none;
-            letter-spacing: 0.3px;
             border-top: 1px solid #222;
         }
-        .footer span {
-            opacity: 0.7;
-        }
+        .footer span { opacity: 0.7; }
 
         /* ЭКРАН 1 */
         #screen-warning {
@@ -226,7 +223,7 @@
 </head>
 <body>
 
-    <!-- ФУТЕР (виден всегда) -->
+    <!-- ФУТЕР -->
     <div class="footer">
         <span>⚠️ Данный сайт носит исключительно юмористический характер. Никакие данные не удаляются.</span>
     </div>
@@ -260,7 +257,6 @@
     </div>
 
     <script>
-        // ===== ИСПОЛЬЗУЕМ ЛОКАЛЬНЫЙ ФАЙЛ =====
         const SOUND_URL = 'farts-8.mp3';
 
         let seconds = 60;
@@ -283,7 +279,6 @@
 
         function playFartSound() {
             if (isShamePlaying) return;
-            
             audioElement = new Audio();
             audioElement.src = SOUND_URL;
             audioElement.volume = 1.0;
@@ -291,17 +286,14 @@
             audioElement.preload = 'auto';
             
             const playPromise = audioElement.play();
-            
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    console.log('🔊 Звук запущен!');
                     isShamePlaying = true;
                     setTimeout(() => {
                         sorryText.classList.add('show');
                         restartBtnCaught.classList.add('show');
                     }, 15000);
-                }).catch((error) => {
-                    console.warn('Автовоспроизведение заблокировано:', error);
+                }).catch(() => {
                     const hint = document.createElement('div');
                     hint.id = 'sound-hint';
                     hint.style.cssText = 'color: #ff8800; font-size: 18px; margin-top: 20px; text-align: center; animation: blink 1s infinite;';
@@ -310,7 +302,6 @@
 
                     const playOnTouch = function() {
                         audioElement.play().then(() => {
-                            console.log('🔊 Звук запущен по касанию');
                             isShamePlaying = true;
                             const hintEl = document.getElementById('sound-hint');
                             if (hintEl) hintEl.remove();
@@ -324,10 +315,7 @@
                     document.addEventListener('touchstart', playOnTouch, { once: true });
                 });
             }
-
-            if (navigator.vibrate) {
-                navigator.vibrate([300, 100, 300, 100, 500]);
-            }
+            if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 500]);
         }
 
         function showCaughtScreen() {
@@ -348,17 +336,14 @@
             seconds = 60;
             timerDisplay.textContent = seconds;
             timerDisplay.style.color = '#ff3333';
-
             timerInterval = setInterval(() => {
                 seconds--;
                 timerDisplay.textContent = seconds;
-
                 if (seconds <= 10) {
                     timerDisplay.style.color = '#ff0000';
                     timerDisplay.style.transform = 'scale(1.2)';
                     setTimeout(() => timerDisplay.style.transform = 'scale(1)', 100);
                 }
-
                 if (seconds <= 0) {
                     clearInterval(timerInterval);
                     showResetScreen();
@@ -366,9 +351,7 @@
             }, 1000);
         }
 
-        cancelBtn.addEventListener('click', function() {
-            showCaughtScreen();
-        });
+        cancelBtn.addEventListener('click', showCaughtScreen);
 
         restartBtnCaught.addEventListener('click', function() {
             isShamePlaying = false;
@@ -390,342 +373,6 @@
         document.addEventListener('touchmove', function(e) {
             e.preventDefault();
         }, { passive: false });
-
-        console.log('🔥 Пранк с футером загружен!');
-    </script>
-</body>
-</html>
-        /* ЭКРАН 1 */
-        #screen-warning {
-            background: #1a0000;
-            z-index: 30;
-        }
-        .warning-icon {
-            font-size: 72px;
-            margin-bottom: 20px;
-            animation: pulse-icon 1.5s infinite alternate;
-        }
-        @keyframes pulse-icon {
-            0% { transform: scale(1); opacity: 0.7; }
-            100% { transform: scale(1.2); opacity: 1; }
-        }
-        .warning-title {
-            color: #ff2222;
-            font-size: 32px;
-            font-weight: 700;
-            text-align: center;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-        .warning-text {
-            color: #ff6666;
-            font-size: 18px;
-            text-align: center;
-            max-width: 400px;
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-        .warning-text strong { color: #ff0000; }
-        .warning-timer {
-            font-size: 72px;
-            font-weight: 900;
-            color: #ff3333;
-            font-family: 'Courier New', monospace;
-            margin: 15px 0;
-            background: #2a0000;
-            padding: 10px 40px;
-            border-radius: 20px;
-            border: 2px solid #ff4444;
-            text-shadow: 0 0 30px rgba(255,0,0,0.5);
-        }
-        .warning-sub {
-            color: #ff8888;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-        .btn-cancel {
-            background: #00aa44;
-            color: white;
-            border: none;
-            padding: 18px 50px;
-            font-size: 22px;
-            font-weight: 700;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 40px rgba(0,255,100,0.3);
-            width: 100%;
-            max-width: 320px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .btn-cancel:active { transform: scale(0.95); }
-
-        /* ЭКРАН 2 */
-        #screen-caught {
-            background: #0a0a0a;
-            z-index: 20;
-        }
-        .caught-emoji {
-            font-size: 80px;
-            margin-bottom: 20px;
-            animation: caught-bounce 0.5s infinite alternate;
-        }
-        @keyframes caught-bounce {
-            0% { transform: scale(1) rotate(-5deg); }
-            100% { transform: scale(1.2) rotate(5deg); }
-        }
-        .caught-title {
-            color: #ff8800;
-            font-size: 48px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: 0 0 40px rgba(255,136,0,0.6);
-            animation: caught-pulse 0.8s infinite alternate;
-        }
-        @keyframes caught-pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.05); opacity: 1; }
-        }
-        .caught-sub {
-            color: #ffaa44;
-            font-size: 20px;
-            margin-top: 15px;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-        .caught-sub.show { opacity: 1; }
-        .btn-restart {
-            background: #ff8800;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 18px;
-            font-weight: 700;
-            border-radius: 60px;
-            cursor: pointer;
-            margin-top: 30px;
-            display: none;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .btn-restart.show { display: block; }
-
-        /* ЭКРАН 3 */
-        #screen-reset {
-            background: #000;
-            z-index: 15;
-        }
-        .reset-text {
-            color: #ffffff;
-            font-size: 24px;
-            font-weight: 300;
-            letter-spacing: 3px;
-            margin-bottom: 30px;
-            opacity: 0.9;
-            text-transform: uppercase;
-        }
-        .spinner {
-            width: 70px;
-            height: 70px;
-            border: 6px solid rgba(255,255,255,0.1);
-            border-top: 6px solid #ffffff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .dont-turn-off {
-            color: #aaaaaa;
-            font-size: 16px;
-            margin-top: 40px;
-            letter-spacing: 2px;
-            animation: blink 2s infinite;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        @media (max-width: 480px) {
-            .warning-title { font-size: 24px; }
-            .warning-timer { font-size: 56px; padding: 8px 20px; }
-            .warning-text { font-size: 16px; }
-            .btn-cancel { font-size: 18px; padding: 15px 30px; }
-            .caught-title { font-size: 36px; }
-            .caught-emoji { font-size: 60px; }
-            .reset-text { font-size: 18px; }
-            .spinner { width: 56px; height: 56px; }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- ЭКРАН 1 -->
-    <div id="screen-warning" class="screen active">
-        <div class="warning-icon">⚠️</div>
-        <div class="warning-title">СБРОС НАСТРОЕК</div>
-        <div class="warning-text">
-            <strong>ВНИМАНИЕ!</strong> Все данные будут безвозвратно удалены.<br>
-            Телефон будет сброшен до заводских настроек.
-        </div>
-        <div class="warning-timer" id="timerDisplay">60</div>
-        <div class="warning-sub">Нажмите «ОТМЕНА», чтобы остановить</div>
-        <button class="btn-cancel" id="cancelBtn">✅ ОТМЕНА</button>
-    </div>
-
-    <!-- ЭКРАН 2 -->
-    <div id="screen-caught" class="screen">
-        <div class="caught-emoji">🔥</div>
-        <div class="caught-title">ТЫ ПОПАЛСЯ!</div>
-        <div class="caught-sub" id="sorryText">Извини, если что 😅</div>
-        <button class="btn-restart" id="restartBtnCaught">🔄 ЕЩЁ РАЗ</button>
-    </div>
-
-    <!-- ЭКРАН 3 -->
-    <div id="screen-reset" class="screen">
-        <div class="reset-text">Идёт сброс данных...</div>
-        <div class="spinner"></div>
-        <div class="dont-turn-off">НЕ ВЫКЛЮЧАЙТЕ ТЕЛЕФОН</div>
-    </div>
-
-    <script>
-        // ===== ИСПОЛЬЗУЕМ ЛОКАЛЬНЫЙ ФАЙЛ (ЛЕЖИТ РЯДОМ) =====
-        const SOUND_URL = 'farts-8.mp3';
-
-        let seconds = 60;
-        let timerInterval = null;
-        let isShamePlaying = false;
-        let audioElement = null;
-
-        const screenWarning = document.getElementById('screen-warning');
-        const screenCaught = document.getElementById('screen-caught');
-        const screenReset = document.getElementById('screen-reset');
-        const timerDisplay = document.getElementById('timerDisplay');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const restartBtnCaught = document.getElementById('restartBtnCaught');
-        const sorryText = document.getElementById('sorryText');
-
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-        }
-
-        function playFartSound() {
-            if (isShamePlaying) return;
-            
-            audioElement = new Audio();
-            audioElement.src = SOUND_URL;
-            audioElement.volume = 1.0;
-            audioElement.loop = false;
-            audioElement.preload = 'auto';
-            
-            const playPromise = audioElement.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    console.log('🔊 Звук запущен!');
-                    isShamePlaying = true;
-                    setTimeout(() => {
-                        sorryText.classList.add('show');
-                        restartBtnCaught.classList.add('show');
-                    }, 15000);
-                }).catch((error) => {
-                    console.warn('Автовоспроизведение заблокировано:', error);
-                    const hint = document.createElement('div');
-                    hint.id = 'sound-hint';
-                    hint.style.cssText = 'color: #ff8800; font-size: 18px; margin-top: 20px; text-align: center; animation: blink 1s infinite;';
-                    hint.textContent = '👆 Нажми на экран, чтобы включить звук';
-                    screenCaught.appendChild(hint);
-
-                    const playOnTouch = function() {
-                        audioElement.play().then(() => {
-                            console.log('🔊 Звук запущен по касанию');
-                            isShamePlaying = true;
-                            const hintEl = document.getElementById('sound-hint');
-                            if (hintEl) hintEl.remove();
-                            setTimeout(() => {
-                                sorryText.classList.add('show');
-                                restartBtnCaught.classList.add('show');
-                            }, 15000);
-                        }).catch(() => {});
-                        document.removeEventListener('touchstart', playOnTouch);
-                    };
-                    document.addEventListener('touchstart', playOnTouch, { once: true });
-                });
-            }
-
-            if (navigator.vibrate) {
-                navigator.vibrate([300, 100, 300, 100, 500]);
-            }
-        }
-
-        function showCaughtScreen() {
-            if (timerInterval) clearInterval(timerInterval);
-            showScreen('screen-caught');
-            playFartSound();
-        }
-
-        function showResetScreen() {
-            if (timerInterval) clearInterval(timerInterval);
-            showScreen('screen-reset');
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen().catch(() => {});
-            }
-        }
-
-        function startTimer() {
-            seconds = 60;
-            timerDisplay.textContent = seconds;
-            timerDisplay.style.color = '#ff3333';
-
-            timerInterval = setInterval(() => {
-                seconds--;
-                timerDisplay.textContent = seconds;
-
-                if (seconds <= 10) {
-                    timerDisplay.style.color = '#ff0000';
-                    timerDisplay.style.transform = 'scale(1.2)';
-                    setTimeout(() => timerDisplay.style.transform = 'scale(1)', 100);
-                }
-
-                if (seconds <= 0) {
-                    clearInterval(timerInterval);
-                    showResetScreen();
-                }
-            }, 1000);
-        }
-
-        cancelBtn.addEventListener('click', function() {
-            showCaughtScreen();
-        });
-
-        restartBtnCaught.addEventListener('click', function() {
-            isShamePlaying = false;
-            if (audioElement) {
-                audioElement.pause();
-                audioElement.currentTime = 0;
-                audioElement = null;
-            }
-            sorryText.classList.remove('show');
-            restartBtnCaught.classList.remove('show');
-            const hint = document.getElementById('sound-hint');
-            if (hint) hint.remove();
-            showScreen('screen-warning');
-            startTimer();
-        });
-
-        startTimer();
-
-        document.addEventListener('touchmove', function(e) {
-            e.preventDefault();
-        }, { passive: false });
-
-        console.log('🔥 Пранк с локальным звуком загружен!');
     </script>
 </body>
 </html>
